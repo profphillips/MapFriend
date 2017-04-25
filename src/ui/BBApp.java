@@ -9,6 +9,7 @@ import utility.Validator;
 
 /**
  * A black book rating app. Now using Java API data structures.
+ * Working toward a map implementation.
  *
  * @author 55jphillip
  */

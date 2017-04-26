@@ -1,5 +1,7 @@
 package model;
 
+import java.util.Objects;
+
 /**
  *
  * @author 55jphillip
@@ -14,6 +16,20 @@ public class Friend implements Comparable<Friend> {
         this.rating = rating;
     }
 
+    @Override
+    public boolean equals(Object o){
+        if (o == this) return true;
+        if (!(o instanceof Friend)) return false;
+        Friend friend = (Friend) o;
+        //return this.name.equals(friend.getName());
+        return rating==friend.rating && Objects.equals(name, friend.name);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, rating);
+    }
+    
     public String getName() {
         return name;
     }

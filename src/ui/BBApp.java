@@ -1,13 +1,20 @@
 package ui;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Scanner;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 import model.Friend;
 import utility.Validator;
 
 /**
- * A black book rating app. Now using Java API data structures. Working toward a
+ * A black book rating app. Now using Java API data structures. Now using a hash
  * map implementation.
  *
  * @author 55jphillip
@@ -46,39 +53,37 @@ public class BBApp {
             } else if (choice.equals("list")) {
                 System.out.println(map);
             } else if (choice.equals("name")) {
-                //Collections.sort(map, (a, b) -> a.getName().compareTo(b.getName()));
-//                // If we don't want to change the list then use a temporary array:
-//                Friend[] fa = list.toArray(new Friend[0]);
-//                Arrays.sort(fa, (a, b) -> a.getName().compareTo(b.getName()));
-//                for (Friend f : fa) {
-//                    System.out.println(f.toString());
-//                }
+                // TreeMap works well to sort by the key
+                Map<String, Friend> m = new TreeMap(map);
+                for (Friend friend : m.values()) {
+                    System.out.println(friend.getName() + ", " + friend.getRating());
+                }
+
             } else if (choice.equals("reverse")) {
-                //Collections.sort(map, (a, b) -> b.getName().compareTo(a.getName()));
+                // Example of using the new Java 8 stream class to sort
+                Map<String, Friend> rMap = map.entrySet().stream()
+                        .sorted((e1, e2) -> e2.getKey().compareTo(e1.getKey()))
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+                                (e1, e2) -> e1, LinkedHashMap::new));
+                rMap.forEach((key, value) -> System.out.println(key + " = " + value));
+
             } else if (choice.equals("rating")) {
-                //Collections.sort(map);
+                // Example of turing map into a list and then sorting the list
+                List<Map.Entry<String, Friend>> rList = new ArrayList<>();
+                rList.addAll(map.entrySet());
+                Collections.sort(rList, (Entry<String, Friend> o1, Entry<String, Friend> o2) -> {
+                    return Integer.compare(o1.getValue().getRating(), o2.getValue().getRating());
+                });
+                System.out.println(rList.toString());
+
             } else if (choice.equals("search")) {
-                // sequential search
+                // very fast hash search O(1)
                 String name = Validator.getLine(sc, "Who would you like to find: ");
-                Friend f = map.get(name);
-                if (f != null) {
-                    System.out.println(f);
+                if (map.containsKey(name)) {
+                    System.out.println(map.get(name));
                 } else {
                     System.out.println(name + " not found!");
                 }
-
-//                Friend match = null;
-//                for (Friend f : map) {
-//                    if (f.getName().equalsIgnoreCase(name)) {
-//                        match = f;
-//                        break;
-//                    }
-//                }
-//                if (match != null) {
-//                    System.out.println("Match found: " + match.toString());
-//                } else {
-//                    System.out.println("Match not found!");
-//                }
             } else if (choice.equals("range")) {
 //                int low = Validator.getInt(sc, "Enter low end rating: ");
 //                int high = Validator.getInt(sc, "Enter high end rating: ");
